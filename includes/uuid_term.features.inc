@@ -45,6 +45,14 @@ function uuid_term_features_export($data, &$export, $module_name = '') {
 
     // Add the vocab UUID to the pipe, to be processed by uuid_vocabulary.
     $export['features']['uuid_vocabulary'][$voc_uuid] = $voc_uuid;
+    
+    // Get the UUID of the term's parents.
+    $tid = uuid_get_serial_id('term_data', 'tid', $uuid);
+    $parents = taxonomy_get_parents($tid);
+    foreach ($parents as $parent) {
+      $parent_uuid = uuid_get_uuid('term_data', 'tid', $parent->tid);
+      $export['features']['uuid_term'][$parent_uuid] = $parent_uuid;
+    }
   }
 
   return $pipe;
@@ -73,6 +81,12 @@ function uuid_term_features_export_render($module = 'foo', $data) {
       if (isset($term->$key)) {
         $export[$key] = $term->$key;
       }
+    }
+    
+    // Get the UUID of the term's parent terms.
+    $parents = taxonomy_get_parents($tid);
+    foreach ($parents as $parent) {
+    	$export['parent'][] = uuid_get_uuid('term_data', 'tid', $parent->tid);
     }
 
     // Get the UUID of the term's vocabulary.
@@ -117,6 +131,13 @@ function uuid_term_features_rebuild($module) {
       $vid = db_result(db_query('SELECT vid FROM {uuid_vocabulary} WHERE uuid = "%s"', $data['uuid_vocabulary']));
       if ($vid) {
         $data['vid'] = $vid;
+        
+        if (isset($data['parent']) && is_array($data['parent'])) {
+	        foreach ($data['parent'] as $key => $parent_uuid) {
+	          $data['parent'][$key] = uuid_get_serial_id('term_data', 'tid', $parent_uuid);
+	        }
+	      }
+
         $ret = taxonomy_save_term($data);
 
         // TODO: remove when http://drupal.org/node/860442 is resolved.
