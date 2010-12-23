@@ -15,15 +15,20 @@ function filefield_uuid_node_features_export_alter(&$export, &$pipe, $node) {
     if ($field['module'] == 'filefield') {
       $field_name = $field['field_name'];
 
-      foreach ($node->$field_name as $delta => $data) {
-        if (!empty($data['fid'])) {
-          $uuid = uuid_get_uuid('files', 'fid', $data['fid']);
-          // If the referenced file doesn't have a uuid, take this opportunity to
-          // create one.
-          if (empty($uuid)) {
-            $uuid = uuid_set_uuid('files', 'fid', $data['fid']);
+      // If the content type has changed since the last export, this field
+      // may not exist.
+      if (isset($node->$field_name)) {
+        // Loop through all values of the field.
+        foreach ($node->$field_name as $delta => $data) {
+          if (!empty($data['fid'])) {
+            $uuid = uuid_get_uuid('files', 'fid', $data['fid']);
+            // If the referenced file doesn't have a uuid, take this opportunity to
+            // create one.
+            if (empty($uuid)) {
+              $uuid = uuid_set_uuid('files', 'fid', $data['fid']);
+            }
+            $pipe['uuid_file'][$uuid] = $uuid;
           }
-          $pipe['uuid_file'][$uuid] = $uuid;
         }
       }
     }

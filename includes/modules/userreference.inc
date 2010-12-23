@@ -25,13 +25,17 @@ function userreference_uuid_node_features_export_render_alter(&$export, &$node, 
 
       // TODO: Use user UUID's instead.
 
-      // Loop through all values of the field.
-      foreach ($node->$field_name as $delta => $data) {
-        $export->{$field_name}[$delta] = array();
+      // If the content type has changed since the last export, this field
+      // may not exist.
+      if (isset($node->$field_name)) {
+        // Loop through all values of the field.
+        foreach ($node->$field_name as $delta => $data) {
+          $export->{$field_name}[$delta] = array();
         
-        // Save the value of each column.
-        foreach ($field['columns'] as $column => $column_data) {
-          $export->{$field_name}[$delta][$column] = $data[$column];
+          // Save the value of each column.
+          foreach ($field['columns'] as $column => $column_data) {
+            $export->{$field_name}[$delta][$column] = $data[$column];
+          }
         }
       }
     }
