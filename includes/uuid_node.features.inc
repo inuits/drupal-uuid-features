@@ -67,18 +67,14 @@ function uuid_node_features_export_render($module, $data) {
   $code[] = '';
   foreach ($data as $uuid) {
     $node = node_get_by_uuid($uuid);
-
-    $export = new stdClass();
-    $props = array('uuid', 'type', 'language', 'status', 'comment', 'promote', 'moderate', 'sticky',
-      'title', 'body', 'format', 'name', 'path', 'revision');
-    foreach ($props as $key) {
-      if (isset($node->$key)) {
-        $export->$key = $node->$key;
-      }
-    }
+    $export = $node;
 
     // Use date instead of created, in the same format used by node_object_prepare.
-    $export->date = format_date($node->created, 'custom', 'Y-m-d H:i:s O');
+    $export->date = format_date($export->created, 'custom', 'Y-m-d H:i:s O');
+    
+    // Don't cause conflicts with the legacy nid/vid fields.
+    unset($export->nid);
+    unset($export->vid);
 
     // The hook_alter signature is:
     // hook_uuid_node_features_export_render_alter(&$export, &$node, $module);
