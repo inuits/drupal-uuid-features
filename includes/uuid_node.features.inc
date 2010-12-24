@@ -67,11 +67,14 @@ function uuid_node_features_export_render($module, $data) {
   $code[] = '';
   foreach ($data as $uuid) {
     $node = node_get_by_uuid($uuid);
+    if (!empty($node->path)) {
+      $node->pathauto_perform_alias = FALSE;
+    }
     $export = $node;
 
     // Use date instead of created, in the same format used by node_object_prepare.
     $export->date = format_date($export->created, 'custom', 'Y-m-d H:i:s O');
-    
+
     // Don't cause conflicts with the legacy nid/vid fields.
     unset($export->nid);
     unset($export->vid);
