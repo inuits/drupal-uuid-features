@@ -80,7 +80,7 @@ function uuid_node_features_export_render($module, $data) {
     unset($export->vid);
 
     // The hook_alter signature is:
-    // hook_uuid_node_features_export_render_alter(&$export, &$node, $module);
+    // hook_uuid_node_features_export_render_alter(&$export, $node, $module);
     drupal_alter('uuid_node_features_export_render', $export, $node, $module);
 
     $code[] = '  $nodes[] = '. features_var_export($export, '  ') .';';

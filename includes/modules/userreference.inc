@@ -14,7 +14,7 @@ function userreference_uuid_node_features_export_render(&$export, &$pipe, $node)
 /**
  * Implementation of hook_uuid_node_features_export_render_alter().
  */
-function userreference_uuid_node_features_export_render_alter(&$export, &$node, $module) {
+function userreference_uuid_node_features_export_render_alter(&$export, $node, $module) {
   $types = content_types();
   if (!empty($types[$node->type])) {
     // Find CCK userreference fields.

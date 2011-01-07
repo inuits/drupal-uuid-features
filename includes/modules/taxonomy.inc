@@ -28,7 +28,7 @@ function taxonomy_uuid_node_features_export_alter(&$export, &$pipe, $node) {
 /**
  * Implementation of hook_uuid_node_features_export_render_alter().
  */
-function taxonomy_uuid_node_features_export_render_alter(&$export, &$node, $module) {
+function taxonomy_uuid_node_features_export_render_alter(&$export, $node, $module) {
   if (!empty($node->taxonomy)) {
     $export->uuid_term = array();
     foreach ($node->taxonomy as $term) {

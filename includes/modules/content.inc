@@ -12,8 +12,7 @@
  * For most CCK fields, it is enough to simply add the values from each db
  * column into a field array.
  */
-function content_uuid_node_features_export_render_alter(&$export, &$node, $module) {
-  $types = content_types();
+function content_uuid_node_features_export_render_alter(&$export, $node, $module) {
   if (!empty($types[$node->type])) {
     // Find CCK text fields.
     foreach ($types[$node->type]['fields'] as $field) {

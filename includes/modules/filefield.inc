@@ -39,7 +39,7 @@ function filefield_uuid_node_features_export_alter(&$export, &$pipe, $node) {
 /**
  * Implementation of hook_uuid_node_features_export_render_alter().
  */
-function filefield_uuid_node_features_export_render_alter(&$export, &$node, $module) {
+function filefield_uuid_node_features_export_render_alter(&$export, $node, $module) {
   $types = content_types();
   if (!empty($types[$node->type])) {
     // Find CCK filefields.
