@@ -46,10 +46,11 @@ function filefield_uuid_node_features_export_render_alter(&$export, $node, $modu
     foreach ($types[$node->type]['fields'] as $field) {
       if ($field['module'] == 'filefield') {
         $field_name = $field['field_name'];
+        $fields = $node->$field_name;
         $export->$field_name = array();
   
         // Loop through all values of the field.
-        foreach ($node->$field_name as $delta => $data) {
+        foreach ($fields as $delta => $data) {
           if (!empty($data['fid'])) {
             $export->{$field_name}[$delta] = array(
               'uuid' => uuid_get_uuid('files', 'fid', $data['fid']),
