@@ -23,7 +23,22 @@ function uuid_file_features_export($data, &$export, $module_name = '') {
  * Implementation of hook_features_export_render().
  */
 function uuid_file_features_export_render($module, $data) {
+  $args = func_get_args();
   $translatables = $code = array();
+  $copy_file = FALSE;
+
+  if (func_num_args() > 2) {
+
+    if (module_exists($module)) {
+      $dir = drupal_get_path('module', $module) .'/uuid_file';
+
+      if (!is_dir($dir)) {
+        mkdir($dir);
+      }
+
+      $copy_file = TRUE;    
+    }
+  }
 
   $code[] = '  $files = array();';
   $code[] = '';
@@ -44,12 +59,17 @@ function uuid_file_features_export_render($module, $data) {
     );
 
     $code[] = '  $files[] = '. features_var_export($export, '  ') .';';
+
+    if ($copy_file) {
+      copy($file['filepath'], $dir .'/'. $uuid .'.'. $extension);
+    }
   }
   if (!empty($translatables)) {
     $code[] = features_translatables_export($translatables, '  ');
   }
   $code[] = '  return $files;';
   $code = implode("\n", $code);
+
   return array('uuid_features_default_files' => $code);
 }
 

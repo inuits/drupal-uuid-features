@@ -96,16 +96,18 @@ function uuid_nodes_per_type_features_revert($module) {
 function uuid_nodes_per_type_features_rebuild($module) {
   $module_info = feature_load($module);
   $types = $module_info->info['features']['uuid_nodes_per_type'];
-  
-  $nodes_default = module_invoke($module, 'uuid_features_default_content_per_type');
-  $nodes = _uuid_nodes_per_type_get_nodes($types);
-  
-  if (!empty($nodes)) {
 
-    foreach ($nodes as $node) {
-      
-      if (!in_array($node->uuid, $nodes_default)) {
-        node_delete($node->nid);
+  if (is_array($types) && !empty($types)) {
+    $nodes_default = module_invoke($module, 'uuid_features_default_content_per_type');
+    $nodes = _uuid_nodes_per_type_get_nodes($types);
+    
+    if (!empty($nodes)) {
+
+      foreach ($nodes as $node) {
+        
+        if (!in_array($node->uuid, $nodes_default)) {
+          node_delete($node->nid);
+        }
       }
     }
   }
