@@ -49,19 +49,22 @@ function uuid_file_features_export_render($module, $data) {
     }
 
     $file = field_file_load($fid);
-    $file_parts = explode('.', $file['filepath']);
-    $extension = array_pop($file_parts);
 
-    $export = array(
-      'uuid' => $uuid,
-      'hash' => md5_file($file['filepath']),
-      'extension' => $extension,
-    );
+    if ($file) {
+      $file_parts = explode('.', $file['filepath']);
+      $extension = array_pop($file_parts);
 
-    $code[] = '  $files[] = '. features_var_export($export, '  ') .';';
+      $export = array(
+        'uuid' => $uuid,
+        'hash' => md5_file($file['filepath']),
+        'extension' => $extension,
+      );
 
-    if ($copy_file) {
-      copy($file['filepath'], $dir .'/'. $uuid .'.'. $extension);
+      $code[] = '  $files[] = '. features_var_export($export, '  ') .';';
+
+      if ($copy_file) {
+        copy($file['filepath'], $dir .'/'. $uuid .'.'. $extension);
+      }
     }
   }
   if (!empty($translatables)) {
