@@ -115,19 +115,21 @@ function uuid_node_features_rebuild($module) {
       $node = (object)$data;
       node_object_prepare($node);
 
-      $existing = node_get_by_uuid($node->uuid);
+      if ($node->type) {
+        $existing = node_get_by_uuid($node->uuid);
 
-      if (!empty($existing)) {
-        $node->nid = $existing->nid;
-        $node->vid = $existing->vid;
+        if (!empty($existing)) {
+          $node->nid = $existing->nid;
+          $node->vid = $existing->vid;
+        }
+
+        // The hook_alter signature is:
+        // hook_uuid_node_features_rebuild_alter(&node, $module);
+        drupal_alter('uuid_node_features_rebuild', $node, $module);
+
+        $node = node_submit($node);
+        node_save($node);
       }
-
-      // The hook_alter signature is:
-      // hook_uuid_node_features_rebuild_alter(&node, $module);
-      drupal_alter('uuid_node_features_rebuild', $node, $module);
-
-      $node = node_submit($node);
-      node_save($node);
     }
   }
 }
